@@ -17,35 +17,25 @@ module.exports = function getZerosCount(number, base) {
 
     return dividers;
   }
-
-  function count_dividers(number, divider) {
-    let count = 0;
-
-    while(number%divider === 0) {
-      count++;
-      number /= divider;
-    }
-
-    return count;
-  }
+  
   //{ '2': 2, '3': 1, '7': 1 }
   let primers_stat = factorize(base);
-  let primers = Object.keys(primers_stat).map(x => parseInt(x));
   let factorial_primers = {};
 
-  primers.forEach(primer => {
+  for(let primer in primers_stat) {
+    let x = number;
     let count = 0;
-    for(let i = primer; i <= number; i += primer) {
-      count += count_dividers(i, primer);
+    while(x) {
+      x = Math.floor(x / primer);
+      count += x;
     }
     factorial_primers[primer] = count;
-  });
-  
+  }
+  //{ '2': 1, '109': 1 } { '2': 98707928, '109': 913961 }
   let count = [];
+  for(let primer in primers_stat) {
+    count.push(Math.floor(factorial_primers[primer]/primers_stat[primer]));
+  }
 
-  primers.forEach(value => {
-    count.push(Math.floor(factorial_primers[value]/primers_stat[value]));
-  });
-  
   return Math.min(...count);
 }
